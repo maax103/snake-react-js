@@ -13,4 +13,4 @@
   3 - run npm start
   
   ---
-  **Feel free to use or modify this project, this game was made just for fun :)**
+  - **Feel free to use or modify this project, this game was made just for fun 😁**
