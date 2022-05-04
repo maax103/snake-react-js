@@ -1,4 +1,4 @@
-# A simple snake game created with React App
+# A simple snake game created with React App ⚛️ 🐍
 
   I made this game just to exercise some React components functionalities.
 
