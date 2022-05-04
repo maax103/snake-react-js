@@ -5,8 +5,8 @@ import { useAudio } from '../../../assets/useAudio';
 
 export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, gameOver}) => {
 
-    const [, playPickFruitAudio] = useAudio("/pickFruitAudio.wav");
-    const [, playGameOverAudio] = useAudio("/gameOverAudio.wav");
+    const [, playPickFruitAudio] = useAudio("https://raw.githubusercontent.com/maax103/snake-react-js/gh-pages/pickFruitAudio.wav");
+    const [, playGameOverAudio] = useAudio("https://raw.githubusercontent.com/maax103/snake-react-js/gh-pages/gameOverAudio.wav");
 
     const GAME_ROWS = 20;
     const GAME_COLUMNS = 20;
@@ -95,12 +95,6 @@ export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, 
     function resetGame() {
         setFieldStatus((fieldStatus) => {
             let newArray = [...fieldStatus];
-            // newArray.forEach((row) =>{
-            //     row.forEach((column)=>{
-            //         console.log()
-            //         newArray[row][column] = 0;
-            //     });
-            // });
             body_position.map((elem) => {
                 newArray[elem.row][elem.column] = PLAYER_BODY;
             });
@@ -152,13 +146,10 @@ export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, 
 
             let newArray = [...gameStatus];
             var possibleRows = [];
-            let possibleColumns = {
-                0: [],1: [],2: [],3: [],
-                4: [], 5: [], 6: [], 7: [],
-                8: [],9: [],10: [],11: [],12: [],
-                13: [],14: [], 15: [],16: [],
-                17: [], 18: [],19: [],
-            };
+            let possibleColumns = {}
+            for(let i = 0; i < GAME_COLUMNS; i ++){
+                possibleColumns[i] = [];
+            }
 
 
             newArray.map( (row, row_index) => {
@@ -195,7 +186,7 @@ export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, 
             });
             switch (move) {
                 case "ARROWDOWN":
-                    if (player_row === 19) {
+                    if (player_row === GAME_ROWS - 1) {
                         next_head_position = { row: 0, column: player_column }
                     } else {
                         next_head_position = { row: player_row + 1, column: player_column }
@@ -203,20 +194,20 @@ export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, 
                     break;
                 case "ARROWUP":
                     if (player_row === 0) {
-                        next_head_position = { row: 19, column: player_column }
+                        next_head_position = { row: GAME_ROWS - 1, column: player_column }
                     } else {
                         next_head_position = { row: player_row - 1, column: player_column }
                     }
                     break
                 case "ARROWLEFT":
                     if (player_column === 0) {
-                        next_head_position = { row: player_row, column: 19 }
+                        next_head_position = { row: player_row, column: GAME_COLUMNS - 1 }
                     } else {
                         next_head_position = { row: player_row, column: player_column - 1 }
                     }
                     break
                 case "ARROWRIGHT":
-                    if (player_column === 19) {
+                    if (player_column === GAME_COLUMNS - 1) {
                         next_head_position = { row: player_row, column: 0 }
                     } else {
                         next_head_position = { row: player_row, column: player_column + 1 }
@@ -232,8 +223,6 @@ export const Game = ({score, gameStart, setGameOver, setScore, handleGameReset, 
             if(COLIDE){
                 playPickFruitAudio();
                 setScore( score=> {
-                    
-                    console.log("level update", score, level);
                     if((score +1) %5 == 0 && level < 6){updateLevel()}
                     return score + 1} )
                 spawnFruit(newArray)

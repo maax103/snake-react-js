@@ -11,7 +11,7 @@ export const GamePage = () => {
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
 
-  const [, playClickGameAudio] = useAudio("/clickGameAudio.wav")
+  const [, playClickGameAudio] = useAudio("https://raw.githubusercontent.com/maax103/snake-react-js/gh-pages/clickGameAudio.wav")
 
   function handleGameStart(){
     setGameStart(true);
