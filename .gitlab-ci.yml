@@ -20,6 +20,7 @@ build:
   stage: build
   image: node:22
   script:
+    - CI=false
     - npm ci
     - npm run build
   artifacts:
