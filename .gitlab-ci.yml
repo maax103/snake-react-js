@@ -7,8 +7,8 @@ stages:
   - deploy
 
 before_script:
-  - apk update
-  - apk add git
+  - apt update
+  - apt install git -y
   - git config --global credential.helper store
   - echo "https://proway:$MAX_ACCESS_TOKEN@10.0.6.217" > ~/.git-credentials
   - chmod 600 ~/.git-credentials
