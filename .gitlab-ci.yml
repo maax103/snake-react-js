@@ -23,7 +23,7 @@ cache:
 
 build:
   stage: build
-  image: node:16
+  image: node:22
   script:
     - npm ci
     - npm run build
