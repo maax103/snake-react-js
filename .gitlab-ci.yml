@@ -16,11 +16,6 @@ before_script:
   - git remote set-url origin https://10.0.6.217/proway/max.git
   - echo "Instalando dependências"
 
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - node_modules/
-
 build:
   stage: build
   image: node:22
