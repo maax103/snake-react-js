@@ -31,14 +31,14 @@ deploy:
   stage: deploy
   image: alpine:latest
   before_script:
+    - echo "Conteúdo da chave:"
+    - echo "$SSH_PRIVATE_KEY" | sed 's/./& /g'
     - apk add --no-cache openssl openssh rsync
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
   script:
-    - echo "Conteúdo da chave:"
-    - echo "$SSH_PRIVATE_KEY" | sed 's/./& /g'
     - ssh $SSH_USER@$SSH_SERVER "sudo mkdir -p $REMOTE_PATH"
     - scp -r $BUILD_DIR/* $SSH_USER@$SSH_SERVER:/tmp/build
     - ssh $SSH_USER@$SSH_SERVER "sudo rm -rf $REMOTE_PATH/* && sudo mv /tmp/build/* $REMOTE_PATH/"
