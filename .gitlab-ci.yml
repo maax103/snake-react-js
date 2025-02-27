@@ -1,0 +1,49 @@
+variables:
+  BUILD_DIR: "build"
+  GIT_STRATEGY: none 
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - apk update
+  - apk add git
+  - git config --global credential.helper store
+  - echo "https://proway:$MAX_ACCESS_TOKEN@10.0.6.217" > ~/.git-credentials
+  - chmod 600 ~/.git-credentials
+  - git -c http.sslVerify=false clone https://10.0.6.217/proway/max.git .  # Replace NEW_IP with your correct IP
+  - git remote set-url origin https://10.0.6.217/proway/max.git
+  - echo "Instalando dependências"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - $BUILD_DIR
+
+deploy:
+  stage: deploy
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache openssl openssh rsync
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $SSH_SERVER >> ~/.ssh/known_hosts
+  script:
+    - ssh $SSH_USER@$SSH_SERVER "sudo mkdir -p $REMOTE_PATH"
+    - scp -r $BUILD_DIR/* $SSH_USER@$SSH_SERVER:/tmp/build
+    - ssh $SSH_USER@$SSH_SERVER "sudo rm -rf $REMOTE_PATH/* && sudo mv /tmp/build/* $REMOTE_PATH/"
+    - ssh $SSH_USER@$SSH_SERVER "sudo systemctl restart nginx"
+  only:
+    - main
